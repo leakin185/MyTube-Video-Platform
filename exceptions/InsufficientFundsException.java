@@ -1,7 +1,7 @@
 package com.leajava.exceptions;
 
-// Checked -> Exception
-// Unchecked (runtime) -> RuntimeException
+// Checked -> extend Exception class
+// Unchecked (runtime) -> extend RuntimeException class
 
 public class InsufficientFundsException extends Exception {
   public InsufficientFundsException() {
