@@ -19,7 +19,7 @@ public class Utils {
     Object x = users.get(0);
   }
   // wildcard with the super keyword
-  public static void printUsers2
+  public static void addUsers
           (GenericList<? super User> users) {
     Object x = users.get(0);
     // User x = users.get(0);
