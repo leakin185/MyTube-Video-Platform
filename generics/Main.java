@@ -18,5 +18,11 @@ public class Main {
         System.out.println(User);
 
         Utils.print(1,"Lea");
+
+        var list = new GenericList<String>();
+        list.add("a");
+        list.add("b");
+        for (var item: list)
+            System.out.println(item);
     }
 }

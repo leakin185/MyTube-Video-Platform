@@ -16,7 +16,7 @@ public class Utils {
   // wildcard, this method accepts user and its subtypes in GenericList
   public static void printUsers
         (GenericList<? extends User> users) {
-    Object x = users.get(0);
+    User x = users.get(0);
   }
   // wildcard with the super keyword
   public static void addUsers
