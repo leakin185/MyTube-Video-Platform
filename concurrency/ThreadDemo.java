@@ -9,8 +9,7 @@ public class ThreadDemo {
     var thread1 = new Thread(() -> System.out.println("a"));
 
     // or using an instance of a class that implements the Runnable interface
-    var status = new DownloadStatus();
-    var thread2 = new Thread(new DownloadFileTask(status));
+    var thread2 = new Thread(new DownloadFileTask());
 
     // Next we start a thread
     thread1.start();
@@ -36,11 +35,33 @@ public class ThreadDemo {
 
     //1. confinement
     List<Thread> threads = new ArrayList<>();
+    List<DownloadFileTask> tasks = new ArrayList<>();
 
     for (var i = 0; i < 10; i++) {
-      var thread = new Thread(new DownloadFileTask(status));
+      var task = new DownloadFileTask();
+      tasks.add(task);
+      var thread = new Thread(task);
       thread.start();
       threads.add(thread);
     }
+
+    // wait for all threads to finish execution
+    // the join() method shouldn't be added above otherwise the threads will run consecutively and not concurrently
+    for (var thread : threads) {
+      try {
+        thread.join();
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+
+    var totalBytes = tasks.stream()
+            .map(t->t.getStatus().getTotalBytes())
+            .reduce(Integer::sum);
+    System.out.println(totalBytes);
+
+    // 2. Synchronization with Locks
+
+
   }
 }

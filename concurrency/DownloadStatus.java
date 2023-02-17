@@ -1,10 +1,12 @@
 package com.leajava.concurrency;
 
 import java.util.concurrent.atomic.LongAdder;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class DownloadStatus {
   private boolean isDone;
   private LongAdder totalBytes = new LongAdder();
+  private ReentrantLock lock = new ReentrantLock();
   private int totalFiles;
 
   public int getTotalBytes() {
@@ -12,7 +14,14 @@ public class DownloadStatus {
   }
 
   public void incrementTotalBytes() {
-    totalBytes.increment();
+    lock.lock();
+    try {
+      totalBytes.increment();
+    }
+    finally {
+      // put it in a finally-block, so it will always get unlocked, even with exception
+      lock.unlock();
+    }
   }
 
   public void incrementTotalFiles() {
