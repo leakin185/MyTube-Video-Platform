@@ -60,9 +60,6 @@ public class ThreadDemo {
             .reduce(Integer::sum);
     System.out.println(totalBytes);
 
-    // 2. Synchronization with Locks
-    // implementation not shown
-
 
   }
 }

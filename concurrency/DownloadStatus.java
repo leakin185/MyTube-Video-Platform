@@ -3,7 +3,7 @@ package com.leajava.concurrency;
 import java.util.concurrent.atomic.LongAdder;
 
 public class DownloadStatus {
-  private boolean isDone;
+  private volatile boolean isDone;
   private LongAdder totalBytes = new LongAdder();;
   private int totalFiles;
   private Object totalBytesLock = new Object();
