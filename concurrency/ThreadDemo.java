@@ -1,15 +1,16 @@
 package com.leajava.concurrency;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ThreadDemo {
   public static void show() {
     // We can create a thread using a lambda expression
     var thread1 = new Thread(() -> System.out.println("a"));
+    var status = new DownloadStatus();
 
     // or using an instance of a class that implements the Runnable interface
-    var thread2 = new Thread(new DownloadFileTask());
+    var thread2 = new Thread(new DownloadFileTask(status));
 
     // Next we start a thread
     thread1.start();
@@ -33,33 +34,48 @@ public class ThreadDemo {
     System.out.println(current.getId());
     System.out.println(current.getName());
 
-    //1. confinement
-    List<Thread> threads = new ArrayList<>();
-    List<DownloadFileTask> tasks = new ArrayList<>();
+    // synchronized collections
+    Collection<Integer> collection =
+            Collections.synchronizedCollection(new ArrayList<>());
+    var thread3 = new Thread(() -> {
+      collection.addAll(Arrays.asList(1,2,3));
+    });
+    var thread4 = new Thread(() -> {
+      collection.addAll(Arrays.asList(4,5,6));
+    });
+    thread3.start();
+    thread4.start();
 
-    for (var i = 0; i < 10; i++) {
-      var task = new DownloadFileTask();
-      tasks.add(task);
-      var thread = new Thread(task);
+    try {
+      thread3.join();
+      thread4.join();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+
+    System.out.println(collection);
+
+    // concurrent collections
+    Map<Integer, String> map = new ConcurrentHashMap<>();
+    map.put(1,"a");
+    map.get(1);
+    map.remove(1);
+
+    // eliminating race condition with adders
+    List<Thread> threads = new ArrayList<>();
+
+    for (var i = 0;i<10;i++){
+      var thread = new Thread(new DownloadFileTask(status));
       thread.start();
       threads.add(thread);
     }
-
-    // wait for all threads to finish execution
-    // the join() method shouldn't be added above otherwise the threads will run consecutively and not concurrently
-    for (var thread : threads) {
+    for (var thread:threads) {
       try {
         thread.join();
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
     }
-
-    var totalBytes = tasks.stream()
-            .map(t->t.getStatus().getTotalBytes())
-            .reduce(Integer::sum);
-    System.out.println(totalBytes);
-
-
+    System.out.println(status.getTotalBytes());
   }
 }
