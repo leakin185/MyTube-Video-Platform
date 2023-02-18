@@ -61,6 +61,7 @@ public class ThreadDemo {
     System.out.println(totalBytes);
 
     // 2. Synchronization with Locks
+    // implementation not shown
 
 
   }
